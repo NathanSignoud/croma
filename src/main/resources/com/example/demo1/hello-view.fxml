@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="container" prefHeight="493.0" prefWidth="894.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo1.InterfaceController">
+    <Button fx:id="loadFileButton" layoutX="96.0" layoutY="30.0" onAction="#handleLoadFileButtonClicked" text="Upload a file" />
+    <Button fx:id="stepButton" layoutX="318.0" layoutY="30.0" mnemonicParsing="false" onAction="#handleStepButtonClicked" styleClass="button" text="Step" />
+    <Button layoutX="260.0" layoutY="30.0" mnemonicParsing="false" onAction="#handleDrawButtonClicked" styleClass="button" text="Draw" />
+    <Button layoutX="725.0" layoutY="30.0" mnemonicParsing="false" onAction="#handleDeleteButtonClicked" styleClass="button" text="Delete" />
+    <Button layoutX="793.0" layoutY="30.0" mnemonicParsing="false" onAction="#handleSaveButtonClicked" styleClass="button" text="Save" />
+    <Pane fx:id="drawingPane" layoutX="17.0" layoutY="115.0" prefHeight="365.0" prefWidth="862.0" styleClass="drawing-pane" />
+    <Button fx:id="slowSpeedButton" layoutX="220.0" layoutY="67.0" onAction="#handleSlowSpeedButtonClicked" text="Lent" />
+    <Button fx:id="mediumSpeedButton" layoutX="270.0" layoutY="67.0" onAction="#handleMediumSpeedButtonClicked" text="Moyen" />
+    <Button fx:id="fastSpeedButton" layoutX="338.0" layoutY="67.0" onAction="#handleFastSpeedButtonClicked" text="Rapide" />
+</AnchorPane>
+
+

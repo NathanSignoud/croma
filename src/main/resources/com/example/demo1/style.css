@@ -1,0 +1,32 @@
+/* Design panel style  */
+#drawingPane {
+    -fx-border-color: black; /* Border colour */
+    -fx-border-width: 2px; /* Border width */
+    -fx-background-color: white;
+    -fx-margin: 25px; /* Margins around the pan */
+    -fx-layout-x: 25px;  /* Distance from left edge */
+    -fx-layout-y: 75px;
+
+}
+
+/* Button style */
+.button {
+    -fx-background-color: #f0f0f0; /* Background colour */
+    -fx-text-fill: black; /* Text color */
+    -fx-font-size: 12px; /*  Font size */
+    -fx-padding: 6px 10px;
+    -fx-border-width: 1px; /* Border width  */
+    -fx-border-radius: 3px;
+    -fx-font-weight: bold;
+}
+
+.button:hover {
+    -fx-background-color: #20493c; /* Hover background colour */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Main style */
+#container {
+    -fx-background-color: #20493c; /* green background colour as for the report */
+}
