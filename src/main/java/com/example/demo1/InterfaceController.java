@@ -63,6 +63,16 @@ public class InterfaceController {
     private ComboBox<String> speedComboBox;
 
 
+    public class Cursor {
+
+        private double x = 0, y = 0;
+        private int red = 0, green = 0, blue = 0;
+        private double rotation = 0;
+
+        public Cursor(){}
+    }
+
+    Cursor cursor1 = new Cursor();
 
 
     @FXML
@@ -250,6 +260,62 @@ public class InterfaceController {
         }
     }
 
+    //FORWARD function, used in the interpreter
+    public int FWD(Cursor c, double distance, int percent){
+        if(percent != 0 && percent != 1){
+            System.out.println("You must put a number between 0 and 1");
+            return 0;
+        }
+        if(percent == 1){
+             distance = Math.max(drawingPane.getPrefWidth(), drawingPane.getPrefHeight()) * distance;
+        }
+        double newX = c.x + distance * Math.cos(Math.toRadians(angle));   // Calculates the new cursor coordinates
+        double newY = c.y + distance * Math.sin(Math.toRadians(angle));
+        if( newX > drawingPane.getWidth() ||newX < 0){
+            System.out.println("You are out of borders, you cannot draw more than " + drawingPane.getWidth() + " pixels");
+            return 0;
+        }
+        if( newY > drawingPane.getHeight() || newY < 0){
+            System.out.println("You are out of borders, you cannot draw more than " + drawingPane.getHeight() + " pixels");
+            return 0;
+        }
+        gc.strokeLine(x, y, newX, newY);        // Draw line from current position to new position
+        c.x = newX;                               // New coordinates
+        c.y = newY;
+        return 1;
+    }
+
+    //BWD function, used in the interpreter
+    public int BWD(Cursor c, double size, int percent){
+        if(percent != 0 && percent != 1){
+            System.out.println("You must put a number between 0 and 1");
+            return 0;
+        }
+        if(percent == 1){
+            size = Math.max(drawingPane.getPrefWidth(), drawingPane.getPrefHeight()) * size;
+        }
+        double newX = x - size * Math.cos(Math.toRadians(angle));   // Calculates the new cursor coordinates
+        double newY = y - size * Math.sin(Math.toRadians(angle));
+        if( newX > drawingPane.getWidth() || newX < 0){
+            System.out.println("You are out of borders, you cannot draw more than " + drawingPane.getWidth() + " pixels");
+            return 0;
+        }
+        if( newY > drawingPane.getHeight()  || newY < 0){
+            System.out.println("You are out of borders, you cannot draw more than " + drawingPane.getHeight() + " pixels");
+            return 0;
+        }
+        gc.strokeLine(x, y, newX, newY);        // Draw line from current position to new position
+        c.x = newX;                               // New coordinates
+        c.y = newY;
+        return 1;
+    }
+
+    //TURN function, used in the interpreter
+    public int TURN(Cursor c, double degree){
+        c.rotation = (c.rotation + degree) % 360;
+        return 1;
+    }
+
     // Method to interpret and execute drawing instruction
     private void interpretInstruction(String instruction) {
         String[] parts = instruction.split(" ");          // Create an array shares to store and use a space as a delimiter
@@ -262,18 +328,12 @@ public class InterfaceController {
                 case "FWD":                                 // Moves the cursor relatively
                     if (parts.length < 2)
                         throw new IllegalArgumentException("FWD command requires 1 parameter");           // Checks whether FWD is followed by a parameter
-                    double distance = Double.parseDouble(parts[1]);                 // Parse distance parameter
-                    double newX = x + distance * Math.cos(Math.toRadians(angle));   // Calculates the new cursor coordinates
-                    double newY = y + distance * Math.sin(Math.toRadians(angle));
-                    gc.strokeLine(x, y, newX, newY);        // Draw line from current position to new position
-                    x = newX;                               // New coordinates
-                    y = newY;
+                    FWD(cursor1, Double.parseDouble(parts[1]), 0);
                     break;
 
                 case "TURN":                    // rotates the cursor relatively in degrees
                     if (parts.length < 2) throw new IllegalArgumentException("TURN command requires 1 parameter");
-                    double turnAngle = Double.parseDouble(parts[1]);        // Parse angle parameter
-                    angle += turnAngle;         // Adds the angle of rotation to the current one
+                    TURN(cursor1, Double.parseDouble(parts[1]));      // Adds the angle of rotation to the current one
                     break;
 
                 case "COLOR":                           // Determines the colour
@@ -284,12 +344,7 @@ public class InterfaceController {
 
                 case "BWD":                     // Moves the cursor back relatively
                     if (parts.length < 2) throw new IllegalArgumentException("BWD command requires 1 parameter");
-                    double size = Double.parseDouble(parts[1]);
-                    double newXCursor = x - size * Math.cos(Math.toRadians(angle));
-                    double newYCursor = y - size * Math.sin(Math.toRadians(angle));
-                    gc.strokeLine(x, y, newXCursor, newYCursor);    // Line moving back with coordinates
-                    x = newXCursor;
-                    y = newYCursor;
+                    BWD(cursor1,Double.parseDouble(parts[1]), 0);
                     break;
 
                 case "MOV":                     // Moves the cursor relatively
@@ -306,17 +361,17 @@ public class InterfaceController {
                     gc.setLineWidth(thickness);     // Width definition
                     break;
 
-                case "HIDE":                    //hide the cursor on the screen
-                    if (scene != null) {
-                        scene.setCursor(Cursor.NONE);
-                    }
-                    break;
-
-                case "SHOW":                    //displays the cursor on the screen
-                    if (scene != null) {
-                        scene.setCursor(Cursor.DEFAULT);
-                    }
-                    break;
+//                case "HIDE":                    //hide the cursor on the screen
+//                    if (scene != null) {
+//                        scene.setCursor(Cursor.NONE);
+//                    }
+//                    break;
+//
+//                case "SHOW":                    //displays the cursor on the screen
+//                    if (scene != null) {
+//                        scene.setCursor(Cursor.DEFAULT);
+//                    }
+//                    break;
 
                 case "POS":             // positions the cursor on the screen
                     if (parts.length < 3) throw new IllegalArgumentException("POS command requires 2 parameters");
