@@ -44,8 +44,6 @@ public class InterfaceController {
     private int currentInstructionIndex = 0;
     private Timeline timeline;
     private GraphicsContext gc;
-    private double x, y;
-    private double angle;
     private boolean hasDrawn = false;
     private Scene scene;
     @FXML
@@ -78,17 +76,16 @@ public class InterfaceController {
     @FXML
     public void initialize() {
         drawingInstructions = new ArrayList<>();
-        stepButton.setDisable(true);            // Desactive step at start-up
-
+        stepButton.setDisable(true);            // Deactivate step at start-up
         Canvas canvas = new Canvas(drawingPane.getPrefWidth(), drawingPane.getPrefHeight());    // Create a canvas for the design and define the necessary parameters
         drawingPane.getChildren().add(canvas);
         gc = canvas.getGraphicsContext2D();
         gc.setLineWidth(1);                     // Set default line width
         gc.setStroke(Color.BLACK);              // Set default stroke color
 
-        x = canvas.getWidth() / 2;          // Set initial x position at the center of the canvas
-        y = canvas.getHeight() / 2;         // Set initial y position at the center of the canvas
-        angle = 0;                          // Initialize angle to 0
+        cursor1.x = canvas.getWidth() / 2;          // Set initial x position at the center of the canvas
+        cursor1.y = canvas.getHeight() / 2;         // Set initial y position at the center of the canvas
+        cursor1.rotation = 0;                          // Initialize angle to 0
 
 
         drawingPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
@@ -160,10 +157,9 @@ public class InterfaceController {
         gc.setLineWidth(1);
         gc.setStroke(Color.BLACK);
 
-        x = canvas.getWidth() / 2;
-        y = canvas.getHeight() / 2;
-        angle = 0;
-
+        cursor1.x = canvas.getWidth() / 2;
+        cursor1.y = canvas.getHeight() / 2;
+        cursor1.rotation = 0;
         int defaultDelay = 1000;
         if (!drawingInstructions.isEmpty()) {           // Start drawing if instructions are available             // Start drawing
             stepButton.setDisable(false);
@@ -269,8 +265,8 @@ public class InterfaceController {
         if(percent == 1){
              distance = Math.max(drawingPane.getPrefWidth(), drawingPane.getPrefHeight()) * distance;
         }
-        double newX = c.x + distance * Math.cos(Math.toRadians(angle));   // Calculates the new cursor coordinates
-        double newY = c.y + distance * Math.sin(Math.toRadians(angle));
+        double newX = c.x + distance * Math.cos(Math.toRadians(cursor1.rotation));   // Calculates the new cursor coordinates
+        double newY = c.y + distance * Math.sin(Math.toRadians(cursor1.rotation));
         if( newX > drawingPane.getWidth() ||newX < 0){
             System.out.println("You are out of borders, you cannot draw more than " + drawingPane.getWidth() + " pixels");
             return 0;
@@ -279,7 +275,8 @@ public class InterfaceController {
             System.out.println("You are out of borders, you cannot draw more than " + drawingPane.getHeight() + " pixels");
             return 0;
         }
-        gc.strokeLine(x, y, newX, newY);        // Draw line from current position to new position
+        System.out.println("Forwarding ...\n "+"newX = " + newX + "\nnewY = " + newY);
+        gc.strokeLine(cursor1.x, cursor1.y, newX, newY);        // Draw line from current position to new position
         c.x = newX;                               // New coordinates
         c.y = newY;
         return 1;
@@ -294,8 +291,8 @@ public class InterfaceController {
         if(percent == 1){
             size = Math.max(drawingPane.getPrefWidth(), drawingPane.getPrefHeight()) * size;
         }
-        double newX = x - size * Math.cos(Math.toRadians(angle));   // Calculates the new cursor coordinates
-        double newY = y - size * Math.sin(Math.toRadians(angle));
+        double newX = cursor1.x - size * Math.cos(Math.toRadians(cursor1.rotation));   // Calculates the new cursor coordinates
+        double newY = cursor1.y - size * Math.sin(Math.toRadians(cursor1.rotation));
         if( newX > drawingPane.getWidth() || newX < 0){
             System.out.println("You are out of borders, you cannot draw more than " + drawingPane.getWidth() + " pixels");
             return 0;
@@ -304,7 +301,7 @@ public class InterfaceController {
             System.out.println("You are out of borders, you cannot draw more than " + drawingPane.getHeight() + " pixels");
             return 0;
         }
-        gc.strokeLine(x, y, newX, newY);        // Draw line from current position to new position
+        gc.strokeLine(cursor1.x, cursor1.y, newX, newY);        // Draw line from current position to new position
         c.x = newX;                               // New coordinates
         c.y = newY;
         return 1;
@@ -351,8 +348,8 @@ public class InterfaceController {
                     if (parts.length < 3) throw new IllegalArgumentException("MOV command requires 2 parameters");
                     double movX = Double.parseDouble(parts[1]);
                     double movY = Double.parseDouble(parts[2]);
-                    x += movX;                  // Add mov
-                    y += movY;
+                    cursor1.x += movX;                  // Add mov
+                    cursor1.y += movY;
                     break;
 
                 case "THICK":                   // Is used to define the thickness of a line before moving the cursor
@@ -378,8 +375,8 @@ public class InterfaceController {
                     double posX = Double.parseDouble(parts[1]);
                     double posY = Double.parseDouble(parts[2]);
                     gc.moveTo(posX, posY);
-                    x = posX;
-                    y = posY;
+                    cursor1.x = posX;
+                    cursor1.y = posY;
                     break;
 
                 case "PRESS":           // indicates the pressure with which the cursor draws the shape
