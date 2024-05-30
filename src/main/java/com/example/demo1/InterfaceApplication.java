@@ -10,7 +10,7 @@ public class InterfaceApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/com/example/demo1/hello-view.fxml"));
-        primaryStage.setTitle("Drawing Application");
+        primaryStage.setTitle("CromatYnk Application");
 
         // Class file
         Scene scene = new Scene(root);

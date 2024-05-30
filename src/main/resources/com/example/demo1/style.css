@@ -30,3 +30,6 @@
 #container {
     -fx-background-color: #20493c; /* green background colour as for the report */
 }
+
+.drawing-pane {
+}
